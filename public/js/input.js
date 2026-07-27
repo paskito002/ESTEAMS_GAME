@@ -11,7 +11,7 @@
     this.actions = { shootPressed: false, passPressed: false, sprint: false, switchPressed: false };
     this.shootHeldT = 0;
     this._bindKeyboard();
-    if (opts.joyEl) this._bindTouch(opts.joyEl, opts.joyKnob);
+    if (opts.joyEl) this._bindTouch(opts.joyZoneEl || opts.joyEl, opts.joyEl, opts.joyKnob);
     if (opts.shootBtn) this._bindButton(opts.shootBtn, 'shoot');
     if (opts.passBtn) this._bindButton(opts.passBtn, 'pass');
     if (opts.sprintBtn) this._bindHold(opts.sprintBtn, 'sprint');
@@ -52,20 +52,40 @@
     el.addEventListener('mouseleave', off);
   };
 
-  Input.prototype._bindTouch = function (base, knob) {
+  // `zone` is a generous invisible hit area; `base`/`knob` are the visible joystick,
+  // which floats to wherever the touch actually lands inside the zone. A fixed
+  // pixel-precise hit circle in a screen corner is unforgiving for a thumb that
+  // doesn't land exactly on it, so the visible base is cosmetic only here.
+  Input.prototype._bindTouch = function (zone, base, knob) {
     var self = this;
-    var rect, active = false, id = null, cx = 0, cy = 0;
+    var baseR = base.offsetWidth / 2 || 59;
+    var active = false, id = null, cx = 0, cy = 0;
 
+    function clampToZone(x, y) {
+      var zr = zone.getBoundingClientRect();
+      return {
+        x: U.clamp(x, zr.left + baseR, zr.right - baseR),
+        y: U.clamp(y, zr.top + baseR, zr.bottom - baseR)
+      };
+    }
+    function placeBase(x, y) {
+      var pr = base.offsetParent.getBoundingClientRect();
+      base.style.left = (x - pr.left - baseR) + 'px';
+      base.style.top = (y - pr.top - baseR) + 'px';
+      base.style.bottom = 'auto';
+    }
     function start(clientX, clientY, pid) {
-      rect = base.getBoundingClientRect();
-      cx = rect.left + rect.width / 2; cy = rect.top + rect.height / 2;
+      var c = clampToZone(clientX, clientY);
+      cx = c.x; cy = c.y;
+      placeBase(cx, cy);
       active = true; id = pid;
+      base.classList.add('joyActive');
       move(clientX, clientY);
     }
     function move(clientX, clientY) {
       if (!active) return;
       var dx = clientX - cx, dy = clientY - cy;
-      var maxR = rect.width / 2;
+      var maxR = baseR;
       var d = Math.min(Math.hypot(dx, dy), maxR);
       var a = Math.atan2(dy, dx);
       var nx = Math.cos(a) * d, ny = Math.sin(a) * d;
@@ -77,26 +97,29 @@
       active = false; id = null;
       self.joy.x = 0; self.joy.y = 0; self.joy.active = false;
       if (knob) knob.style.transform = 'translate(0,0)';
+      base.classList.remove('joyActive');
+      base.style.left = ''; base.style.top = ''; base.style.bottom = '';
     }
 
-    base.addEventListener('touchstart', function (e) {
+    zone.addEventListener('touchstart', function (e) {
+      if (active) return; // one finger drives the stick; ignore extra touches
       e.preventDefault();
       var t = e.changedTouches[0];
       start(t.clientX, t.clientY, t.identifier);
     }, { passive: false });
-    base.addEventListener('touchmove', function (e) {
+    zone.addEventListener('touchmove', function (e) {
       e.preventDefault();
       for (var i = 0; i < e.changedTouches.length; i++) {
         var t = e.changedTouches[i];
         if (t.identifier === id) move(t.clientX, t.clientY);
       }
     }, { passive: false });
-    base.addEventListener('touchend', function (e) {
+    zone.addEventListener('touchend', function (e) {
       for (var i = 0; i < e.changedTouches.length; i++) if (e.changedTouches[i].identifier === id) end();
     });
-    base.addEventListener('touchcancel', end);
+    zone.addEventListener('touchcancel', end);
 
-    base.addEventListener('mousedown', function (e) { start(e.clientX, e.clientY, 'mouse'); });
+    zone.addEventListener('mousedown', function (e) { start(e.clientX, e.clientY, 'mouse'); });
     window.addEventListener('mousemove', function (e) { if (active) move(e.clientX, e.clientY); });
     window.addEventListener('mouseup', function () { if (active) end(); });
   };

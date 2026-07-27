@@ -147,12 +147,19 @@ select {
 .touchControls {
   position: absolute; inset: 0; z-index: 14; pointer-events: none;
 }
+.joyZone {
+  position: absolute; left: 0; top: 96px; right: 42%; bottom: 0;
+  pointer-events: auto; touch-action: none;
+}
 .joyBase {
   position: absolute; left: 22px; bottom: calc(26px + var(--safe-bottom));
   width: 118px; height: 118px; border-radius: 50%;
   background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.22);
-  pointer-events: auto;
+  pointer-events: none;
+  transition: left 0.1s ease, top 0.1s ease, bottom 0.1s ease, opacity 0.12s ease;
+  opacity: 0.55;
 }
+.joyBase.joyActive { opacity: 1; }
 .joyKnob {
   position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px;
   border-radius: 50%; background: rgba(255,255,255,0.5); border: 2px solid rgba(255,255,255,0.8);

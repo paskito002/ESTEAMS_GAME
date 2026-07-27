@@ -38,6 +38,7 @@
     els.diffSel = $('diffSel');
     els.etToggle = $('etToggle');
     els.soundToggle = $('soundToggle');
+    els.joyZone = $('joyZone');
     els.joyBase = $('joyBase');
     els.joyKnob = $('joyKnob');
     els.shootBtn = $('shootBtn');
@@ -66,7 +67,7 @@
     bindOffline();
 
     input = new AS.Input({
-      joyEl: els.joyBase, joyKnob: els.joyKnob,
+      joyEl: els.joyBase, joyZoneEl: els.joyZone, joyKnob: els.joyKnob,
       shootBtn: els.shootBtn, passBtn: els.passBtn,
       sprintBtn: els.sprintBtn, switchBtn: els.switchBtn
     });

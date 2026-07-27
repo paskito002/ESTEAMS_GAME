@@ -801,7 +801,7 @@
       if (p.state !== 'normal' || p.sentOff) { b.owner = null; }
       else {
         var speed = Math.hypot(p.vx, p.vy);
-        var lead = 0.62 + U.clamp(speed / 8, 0, 1) * 0.55;
+        var lead = 0.5 + U.clamp(speed / 8, 0, 1) * 0.3;
         var tx = p.x + p.fx * lead, ty = p.y + p.fy * lead;
         b.x += (tx - b.x) * Math.min(1, 10 * dt);
         b.y += (ty - b.y) * Math.min(1, 10 * dt);
