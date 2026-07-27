@@ -187,10 +187,10 @@
       onFullTimeCB: onFullTime
     });
 
+    showHud();
+
     renderer = new AS.Renderer(els.canvas);
     renderer.resize();
-
-    showHud();
     updateScoreboard();
     lastT = performance.now();
     if (rafId) cancelAnimationFrame(rafId);
