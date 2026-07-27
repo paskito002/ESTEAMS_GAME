@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Pitch Legends — Arcade Football</title>
+<meta name="description" content="A full arcade football (soccer) game with offside, cards, penalties, extra time and shootouts. Plays offline." />
+<meta name="theme-color" content="#0d5c22" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="assets/apple-touch.png" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ MAIN MENU ============ -->
+  <div id="menu" class="screen">
+    <div class="menuCard">
+      <div class="logo">
+        <span class="logoBall">⚽</span>
+        <h1>PITCH <span>LEGENDS</span></h1>
+      </div>
+      <p class="tagline">Arcade football with real laws of the game — offside, cards, penalties, extra time &amp; shootouts.</p>
+
+      <div class="teamsRow">
+        <div class="teamPick">
+          <label>Home</label>
+          <div id="kitHome" class="kitSwatch"></div>
+          <select id="homeSelect"></select>
+        </div>
+        <div class="vs">VS</div>
+        <div class="teamPick">
+          <label>Away</label>
+          <div id="kitAway" class="kitSwatch"></div>
+          <select id="awaySelect"></select>
+        </div>
+      </div>
+
+      <div class="optionsRow">
+        <div class="opt">
+          <label>Half length</label>
+          <select id="halfLenSel">
+            <option value="15" selected>15 min (30 min match)</option>
+            <option value="10">10 min (20 min match)</option>
+            <option value="5">5 min (quick match)</option>
+            <option value="2">2 min (super quick)</option>
+          </select>
+        </div>
+        <div class="opt">
+          <label>Difficulty</label>
+          <select id="diffSel">
+            <option value="0.3">Rookie</option>
+            <option value="0.55" selected>Pro</option>
+            <option value="0.8">Legend</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="optionsRow toggles">
+        <label class="toggle"><input type="checkbox" id="etToggle" checked /> Extra time + penalties if tied</label>
+        <label class="toggle"><input type="checkbox" id="soundToggle" checked /> Sound</label>
+      </div>
+
+      <button id="startBtn" class="bigBtn">KICK OFF ⚽</button>
+      <button id="installBtn" class="ghostBtn hidden">Install app (play offline)</button>
+
+      <div class="rules">
+        <strong>Laws enforced:</strong> offside with visual line &amp; flag, fouls &amp; yellow/red cards, direct/indirect free kicks,
+        penalties, corners, throw-ins, goal kicks, back-pass rule, extra time and penalty shootouts.
+      </div>
+      <div class="controlsHelp">
+        <strong>Controls:</strong> Move — WASD / Arrows / left stick / drag joystick.
+        Shoot — hold Space / A button / green button (release to strike, longer hold = more power).
+        Pass — X / J / X button / blue button. Sprint — Shift / triggers / hold SPRINT.
+        Switch player — Q / Tab / B button / switch button.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HUD / MATCH SCREEN ============ -->
+  <div id="hud" class="screen hidden">
+    <canvas id="pitch"></canvas>
+
+    <div id="offlineBadge" class="offlineBadge hidden">Offline mode</div>
+
+    <div id="scoreboard" class="scoreboard">
+      <div class="sbTeam"><span id="nameHome">HOME</span><span id="scoreHome">0</span></div>
+      <div class="sbMid">
+        <div id="clock" class="sbClock">0:00</div>
+        <div id="periodLbl" class="sbPeriod">1st Half</div>
+      </div>
+      <div class="sbTeam away"><span id="scoreAway">0</span><span id="nameAway">AWAY</span></div>
+    </div>
+
+    <button id="pauseBtn" class="pauseBtn" aria-label="Pause">❙❙</button>
+
+    <div id="shotPowerWrap" class="shotPowerWrap hidden">
+      <div class="shotPowerLabel">POWER</div>
+      <div class="shotPowerTrack"><div id="shotPowerBar" class="shotPowerBar"></div></div>
+    </div>
+
+    <div id="feed" class="feed"></div>
+
+    <!-- touch controls -->
+    <div class="touchControls">
+      <div id="joyBase" class="joyBase"><div id="joyKnob" class="joyKnob"></div></div>
+      <div class="actionCluster">
+        <button id="passBtn" class="actionBtn passBtn">PASS</button>
+        <button id="shootBtn" class="actionBtn shootBtn">SHOOT</button>
+        <button id="switchBtn" class="actionBtn switchBtn">SWITCH</button>
+        <button id="sprintBtn" class="actionBtn sprintBtn">SPRINT</button>
+      </div>
+    </div>
+
+    <!-- pause overlay -->
+    <div id="pauseMenu" class="overlay hidden">
+      <div class="overlayCard">
+        <h2>Paused</h2>
+        <button id="resumeBtn" class="bigBtn">Resume</button>
+        <button id="restartBtn" class="ghostBtn">Restart Match</button>
+        <button id="quitBtn" class="ghostBtn">Quit to Menu</button>
+      </div>
+    </div>
+
+    <!-- full time overlay -->
+    <div id="fullTime" class="overlay hidden">
+      <div class="overlayCard">
+        <h2>Full Time</h2>
+        <p id="ftLine" class="ftLine"></p>
+        <button id="ftRematch" class="bigBtn">Rematch</button>
+        <button id="ftMenu" class="ghostBtn">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/util.js"></script>
+<script src="js/pitch.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/rules.js"></script>
+<script src="js/game.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/input.js"></script>
+<script src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

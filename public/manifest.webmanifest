@@ -1,0 +1,15 @@
+{
+  "name": "Pitch Legends — Arcade Football",
+  "short_name": "Pitch Legends",
+  "description": "Full arcade football game with offside, cards, penalties, extra time and shootouts. Works offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#06120a",
+  "theme_color": "#0d5c22",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

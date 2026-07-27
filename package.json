@@ -1,0 +1,13 @@
+{
+  "name": "pitch-legends",
+  "version": "1.0.0",
+  "description": "Arcade football (soccer) game — offside, cards, penalties, extra time, shootouts. Runs offline as a PWA.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
